@@ -1,0 +1,24 @@
+package com.example.WebFlux.controller;
+
+import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
+
+import java.security.Principal;
+
+@RestController
+@RequestMapping("/admin")
+@AllArgsConstructor
+public class AdminController {
+
+    @GetMapping
+    @PreAuthorize("hasAnyRole('MANAGER')")
+    public Mono<ResponseEntity<String>> getAdminInfo(Mono<Principal> principal){
+        return principal.map(Principal::getName)
+                .map(name -> ResponseEntity.ok("Method getAdminInfo is calling. Username is " + name));
+    }
+}
